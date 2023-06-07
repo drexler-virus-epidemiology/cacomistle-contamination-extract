@@ -124,7 +124,7 @@ ls data/reads | \
   [here](https://www.metagenomics.wiki/tools/short-read/remove-host-sequences))
 * Deposit the project folder somewhere on the cluster (e.g. your `work/` drive)
 * Make the scripts executable using `chmod`
-* Submit the job `filter_reads.job` script to the scheduler
+* Modify the directory paths as necessary
 
 ```
 # Make sure scripts are executable
@@ -132,12 +132,7 @@ chmod ug+x ./scripts/*
 
 # Modify the job script to fit your analysis needs 
 cat filter_reads.job
-
-# Submit the script to the scheduler
-sbatch filter_reads.job
 ```
-
-The filtered results can be found in the `$MAPPED` and `$UNMAPPED` folders.
 
 To clone the local folder to the remote location use `rclone`
 
@@ -155,11 +150,14 @@ rclone sync \
 
 The SLURM job script contains several paths that are important for executing
 this script. This includes the directory paths to the `bowtie2` index (`$IDX`),
-the input reads (`$INPUT`) and the location for the results files:
+the input reads (`$INPUT`) and the location for the results files. The filtered
+results can be found in the `$UNMAPPED_PAIR` and `$UNMAPPED_SINGLE` folders. 
 
-* `$UNMAPPED_SINGLE`:
-* `$UNMAPPED_PAIR`: 
-* `$ALIGNED`: The aligned reads in `.BAM` format, including all mapped und unmapped reads.
+* `$UNMAPPED_SINGLE`: Using samtools flags to filter with `samtools view -b -h
+  -f 12 -F 256`
+* `$UNMAPPED_PAIR`: Using the `--un-conc-gz` method provided by `bowtie2`
+* `$ALIGNED`: The aligned reads in `.BAM` format, including all mapped und
+  unmapped reads.
 
 The input path points to a symbolic link at `data/reads` that points to the
 location of the read filter, e. g. a locally mounted folder on the group's
