@@ -149,3 +149,55 @@ rclone sync \
     2305_wendy_novaseq_cacomistle_extract/ \
     ${PATH_TO_PROJECT}/2305_wendy_novaseq_cacomistle_extract/
 ```
+
+## Modify and execute the script `filter_reads.job`
+
+The SLURM job script contains several paths that are important for executing
+this script. This includes the directory paths to the `bowtie2` index (`$IDX`),
+the input reads (`$INPUT`) and the location for the results files:
+
+* `$UNMAPPED_SINGLE`:
+* `$UNMAPPED_PAIR`: 
+* `$ALIGNED`: The aligned reads in `.BAM` format, including all mapped und unmapped reads.
+
+The input path points to a symbolic link at `data/reads` that points to the
+location of the read filter, e. g. a locally mounted folder on the group's
+`work` directory. The `bowtie2` reference index should be located in the
+`results/bowtie_index` directory The results paths currently point to a
+directory on the group's scratch directory. In the beginning of the script, the
+line `#SBATCH -D
+/data/gpfs-1/users/cabe12_c/projects/2305_wendy_novaseq_cacomistle_extract`
+points to the location of the folder containing this repository.
+
+When all paths are set correctly, the script can be submitted to the scheduler.
+
+```
+# Submit the script
+sbatch filter_reads.job
+
+# Check that the script is running (Example output after `#>`)
+squeue -u $USER
+#>JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+#>13422867    medium cacomist cabe12_c  R   19:48:18      1 hpc-cpu-11
+
+# check the output of the slurm log (use correct file name)
+less +F results/slurm_logs/13422867.hpc-cpu-11.out
+#> Preparing the environment...
+#> Starting the script...
+#> Running with 96 threads...
+#> Found index location...
+#> Found input directory...
+#> Found unmapped single read directory...
+#> Found unmapped paired read directory...
+#> Found aligned result directory...
+#> Found number of assigned threads...
+#> Running form directory: /data/gpfs-1/users/cabe12_c/projects/2305_wendy_novaseq_cacomistle_extract
+#> Input File Location: data/reads/
+#> Results (Unmapped Single Sequences): /fast/scratch/groups/ag-drexler/2305_novaseq1_cacomistle/unmapped_single_reads
+#> Results (Unmapped Paired Sequences): /fast/scratch/groups/ag-drexler/2305_novaseq1_cacomistle/unmapped_paired_reads
+#> Results (Aligned): /fast/scratch/groups/ag-drexler/2305_novaseq1_cacomistle/aligned_reads
+#> Input files: data/reads/20099a002_01_S1_L001_R1_001.fastq.gz
+#> data/reads/20099a002_01_S1_L001_R2_001.fastq.gz
+#> data/reads/20099a002_01_S1_L002_R1_001.fastq.gz
+#> ...
+```
