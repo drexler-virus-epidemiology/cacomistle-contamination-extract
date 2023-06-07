@@ -77,13 +77,13 @@ cat results/known_sequences.fasta | grep "^>"
 * Install samtolls to convert SAM to BAM: `conda install samtools`
 ```
 # Create index and direct output to a nohup.out log-file
-mkdir results/230517_bowtie_index
+mkdir results/bowtie_index
 nohup bowtie2-build \
     results/known_sequences.fasta \ # <reference_in> 
-    results/230517_bowtie_index/reference_index # <bt2_index_base>
+    results/bowtie_index/reference_index # <bt2_index_base>
 
 # Save the log file
-mv nohup.out results/230517_bowtie_index/bowtie2-build.log
+mv nohup.out results/bowtie_index/bowtie2-build.log
 ```
 
 * Create a link to the directory containing the data (symlink)
