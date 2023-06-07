@@ -1,0 +1,3 @@
+data/reads
+results/bowtie_index/*
+snakemake/
