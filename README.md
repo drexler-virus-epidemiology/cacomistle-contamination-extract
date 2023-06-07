@@ -148,10 +148,11 @@ rclone sync \
 
 ## Modify and execute the script `filter_reads.job`
 
-The SLURM job script contains several paths that are important for executing
-this script. This includes the directory paths to the `bowtie2` index (`$IDX`),
-the input reads (`$INPUT`) and the location for the results files. The filtered
-results can be found in the `$UNMAPPED_PAIR` and `$UNMAPPED_SINGLE` folders. 
+The SLURM job script `filter_reads.job` contains several paths that are
+important for executing this script. This includes the directory paths to the
+`bowtie2` index (`$IDX`), the input reads (`$INPUT`) and the location for the
+results files. The filtered results can be found in the `$UNMAPPED_PAIR` and
+`$UNMAPPED_SINGLE` folders. 
 
 * `$UNMAPPED_SINGLE`: Using samtools flags to filter with `samtools view -b -h
   -f 12 -F 256`
