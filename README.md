@@ -10,7 +10,7 @@ The samples contain sequences of four viruses that are not of interest for this
 analysis. Reads matching them should be removed from further analysis.
 
 * Paper: Natural co-infection of divergent hepatitis B and C virus homologues
-  in carnivores[DOI](https://doi.org/10.1111/tbed.14340)
+  in carnivores ([DOI](https://doi.org/10.1111/tbed.14340))
 * Ringtail hepacivirus: 
     * Accession: MZ393518.1, GI: 2106717912
     * Accession: MZ393517.1, GI: 2106717910
