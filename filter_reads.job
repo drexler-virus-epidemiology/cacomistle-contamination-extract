@@ -1,0 +1,43 @@
+#!/bin/bash
+
+#SBATCH -J cacomistle-filter
+#SBATCH -D /data/gpfs-1/users/cabe12_c/projects/2305_wendy_novaseq_cacomistle_extract
+#SBATCH -o results/slurm_logs/%j.%N.out
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=96
+#SBATCH --mem-per-cpu=2G
+#SBATCH --get-user-env
+#SBATCH --time=16:00:00
+
+# PREPARE SOFTWARE
+echo "Preparing the environment..."
+source /data/gpfs-1/users/$USER/.bashrc
+micromamba activate bowtie
+
+# PREPARE ENVIRONMENT
+IDX="results/bowtie_index/reference_index"
+INPUT="data/reads/"
+UNMAPPED_SINGLE="/fast/scratch/groups/ag-drexler/2305_novaseq1_cacomistle/unmapped_single_reads"
+UNMAPPED_PAIR="/fast/scratch/groups/ag-drexler/2305_novaseq1_cacomistle/unmapped_paired_reads"
+ALIGNED="/fast/scratch/groups/ag-drexler/2305_novaseq1_cacomistle/aligned_reads"
+
+# Does this help?
+export SRUN_CPUS_PER_TASK=96
+
+mkdir -p $UNMAPPED_SINGLE
+mkdir -p $UNMAPPED_PAIR
+mkdir -p $ALIGNED
+
+# run the script
+echo "Starting the script..."
+echo "Running with $SRUN_CPUS_PER_TASK threads..."
+
+srun ./scripts/10_bowtie_filter_reads.sh \
+    --idx $IDX \
+    --dir-input $INPUT \
+    --dir-unmapped-single $UNMAPPED_SINGLE \
+    --dir-unmapped-pair $UNMAPPED_PAIR \
+    --dir-aligned $ALIGNED \
+    --n-threads $SRUN_CPUS_PER_TASK
+
+echo "Finished running the script."
