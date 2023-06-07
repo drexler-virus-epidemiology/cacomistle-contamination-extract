@@ -106,23 +106,41 @@ for id in "${!file_pairs[@]}"; do
         -x $idx \
         -1 $file_r1 \
         -2 $file_r2 \
-        --un-conc-gz "${dir_unmapped_pair}/${id_trim}_UNMAPPED_%.fastq.gz" \
+        --un-conc-gz "${dir_unmapped_pair}/${id_trim}_R%_001.fastq.gz" \
         -S "${dir_aligned}/${id_trim}.sam" 2> "results/logs/${id_trim}.log"
-    
-    echo "Converting SAM to BAM form ${id_trim}"
 
+    # Compress SAM into BAM to save space 
     samtools view \
         -h \
-        -b ${dir_aligned}/${id_trim}.sam > \
-        ${dir_aligned}/${id_trim}.bam
-    rm ${dir_aligned}/${id_trim}.sam
+        -b "${dir_aligned}/${id_trim}.sam" > \
+        "${dir_aligned}/${id_trim}.bam"
 
     # Filter not paired but single Sequences
     samtools view -b -h -f 12 -F 256 \
-       ${dir_aligned}/${id_trim}.bam \
-       > ${dir_unmapped_single}/${id_trim}.bam
+       "${dir_aligned}/${id_trim}.bam" \
+       > "${dir_unmapped_single}/${id_trim}_UNMAPPED.bam"
 
-    echo "Finished File!"
+    # Sort to enable separating paired reads
+    samtools sort -n -m 2G -@ 96 \
+        "${dir_unmapped_single}/${id_trim}_UNMAPPED.bam" \
+        -o "${dir_unmapped_single}/${id_trim}_UNMAPPED_SORTED.bam"
+
+    # Separate paried reads and save as fastq.gz files to use in vi-fi pipeline
+    samtools fastq -@ 96 \
+        "${dir_unmapped_single}/${id_trim}_UNMAPPED_SORTED.bam" \
+        -1 "${dir_aligned}/${id_trim}_R1_001.fastq.gz" \
+        -2 "${dir_aligned}/${id_trim}_R2_001.fastq.gz" \
+        -0 /dev/null -s /dev/null -n
+
+    # Delete unnecessary files
+    rm "${dir_aligned}/${id_trim}.sam"
+    rm "${dir_unmapped_single}/${id_trim}_UNMAPPED.bam"
+    rm "${dir_unmapped_single}/${id_trim}_UNMAPPED_SORTED.bam"
+
+    # Progress indicator
+    # Get the number of files in the directory
+    file_count=$(ls -1 "$dir_aligned" | wc -l)
+    echo "Finished File: ${id_trim} (Total: $file_count)!"
 
 done
 
