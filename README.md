@@ -37,18 +37,19 @@ The expected output of the program is shown after `#> `.
 # Start a terminal from the project root. This should be the location
 tree .
 #> .
-#> ├── archive
 #> ├── data
-#> │   └── known_sequences
-#> ├── documents
-#> ├── literature
+#> │   ├── known_sequences
+#> │   └── reads -> <SYMLINK/TO/INPUT/DIRECTORY>
+#> ├── filter_reads.job
 #> ├── paper
 #> ├── README.md
 #> ├── results
-#> ├── scripts
-#> │   └── 00_download_known_accession_sequences.sh
-#> ├── sent
-#> └── temp
+#> │   ├── bowtie_index
+#> │   ├── known_sequences.fasta
+#> │   └── slurm_logs
+#> └── scripts
+#>     ├── 00_download_known_accession_sequences.sh
+#>     └── 10_bowtie_filter_reads.sh
 
 # Download the entrez-direct tools and install
 # them into a new conda environment
