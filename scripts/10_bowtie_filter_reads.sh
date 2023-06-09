@@ -128,8 +128,8 @@ for id in "${!file_pairs[@]}"; do
     # Separate paried reads and save as fastq.gz files to use in vi-fi pipeline
     samtools fastq -@ 96 \
         "${dir_unmapped_single}/${id_trim}_UNMAPPED_SORTED.bam" \
-        -1 "${dir_aligned}/${id_trim}_R1_001.fastq.gz" \
-        -2 "${dir_aligned}/${id_trim}_R2_001.fastq.gz" \
+        -1 "${dir_unmapped_single}/${id_trim}_R1_001.fastq.gz" \
+        -2 "${dir_unmapped_single}/${id_trim}_R2_001.fastq.gz" \
         -0 /dev/null -s /dev/null -n
 
     # Delete unnecessary files
